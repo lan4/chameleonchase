@@ -162,9 +162,9 @@ namespace ChameleonChase
             {
                 this.XVelocity = 50.0f;
                 if (posDiff > 0.0f)
-                    this.X -= 0.5f;
+                    this.X -= 0.2f;
                 else if (posDiff < 0.0f)
-                    this.X += 0.5f;
+                    this.X += 0.2f;
             }
         }
 
