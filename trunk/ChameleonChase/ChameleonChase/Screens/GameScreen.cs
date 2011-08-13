@@ -34,8 +34,8 @@ namespace ChameleonChase.Screens
             // exceptions occurring during the constructor.
 
             player = new CrippleMan(FlatRedBallServices.GlobalContentManager);
-			
-			
+
+            Sprite thing = SpriteManager.AddSprite("redball.bmp", FlatRedBallServices.GlobalContentManager);
 			
 			
 			
