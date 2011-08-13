@@ -14,6 +14,8 @@ namespace ChameleonChase.Screens
     {
         CrippleMan player;
 
+        Chameleon chameleon;
+
         #region Methods
 
         #region Constructor and Initialize
@@ -35,9 +37,9 @@ namespace ChameleonChase.Screens
 
             player = new CrippleMan(FlatRedBallServices.GlobalContentManager);
 
-            Sprite thing = SpriteManager.AddSprite("redball.bmp", FlatRedBallServices.GlobalContentManager);
-			
-			
+            chameleon = new Chameleon(FlatRedBallServices.GlobalContentManager);
+
+            Sprite referencePoint = SpriteManager.AddSprite("redball.bmp", FlatRedBallServices.GlobalContentManager);
 			
 			
 			
@@ -61,6 +63,8 @@ namespace ChameleonChase.Screens
         public override void Activity(bool firstTimeCalled)
         {
             player.Activity();
+
+            chameleon.Activity();
 
             base.Activity(firstTimeCalled);
         }
