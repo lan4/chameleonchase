@@ -41,7 +41,7 @@ namespace ChameleonChase
             Renderer.UseRenderTargets = false;
             FlatRedBallServices.InitializeFlatRedBall(this, graphics);
 
-            //ScreenManager.Start(typeof(SomeScreen).FullName);
+            ScreenManager.Start(typeof(GameScreen).FullName);
 
 
             base.Initialize();
