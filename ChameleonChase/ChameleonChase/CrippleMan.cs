@@ -31,6 +31,7 @@ namespace ChameleonChase
         int railPos;
         bool isJumping;
         float groundLevel;
+        int fuelAmount;
 
         #endregion
 
@@ -79,23 +80,24 @@ namespace ChameleonChase
             // Here you may want to add your objects to the engine.  Use layerToAddTo
             // when adding if your Entity supports layers.  Make sure to attach things
             // to this if appropriate.
-            mVisibleRepresentation = SpriteManager.AddSprite("redball.bmp", mContentManagerName);
+            mVisibleRepresentation = SpriteManager.AddSprite("Player_ProgArt.png", mContentManagerName);
             mVisibleRepresentation.AttachTo(this, false);
 
             mCollision = ShapeManager.AddCircle();
             mCollision.AttachTo(this, false);
 
-            this.XVelocity = 5.0f;
+            this.XVelocity = 50.0f;
 
             railPos = 1;
             isJumping = false;
+            fuelAmount = 1000;
 
-            SpriteManager.Camera.XVelocity = 5.0f;
+            SpriteManager.Camera.XVelocity = 50.0f;
         }
 
         public void Move()
         {
-            if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Up))
+            if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Up) || InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.W))
             {
                 if (railPos != 2)
                 {
@@ -104,7 +106,7 @@ namespace ChameleonChase
                     railPos += 1;
                 }
             }
-            else if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Down))
+            else if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Down) || InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.S))
             {
                 if (railPos != 0)
                 {
@@ -122,8 +124,8 @@ namespace ChameleonChase
             if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Space))
             {
                 isJumping = true;
-                this.YVelocity = 10.0f;
-                this.YAcceleration = -5.0f;
+                this.YVelocity = 25.0f;
+                this.YAcceleration = -50.0f;
             }
             else if (isJumping)
             {
@@ -137,12 +139,36 @@ namespace ChameleonChase
             }
         }
 
+        public void Boost()
+        {
+            if (InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) && fuelAmount > 0)
+            {
+                this.XVelocity = 70.0f;
+                fuelAmount--;
+            }
+            else
+            {
+                this.XVelocity = 50.0f;
+            }
+        }
+
+        public void KeepOnScreen()
+        {
+            
+        }
+
         public virtual void Activity()
         {
             // This code should do things like set Animations, respond to input, and so on.
             if (!isJumping)
+            {
                 Move();
+            }
+
             Jump();
+            Boost();
+
+            KeepOnScreen();
         }
 
         public virtual void Destroy()
