@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
+using FlatRedBall;
+using FlatRedBall.Graphics;
+using FlatRedBall.Math.Geometry;
+using FlatRedBall.Input;
 
 namespace ChameleonChase.Screens
 {
     public class GameScreen : Screen
     {
-	
+        CrippleMan player;
+
         #region Methods
 
         #region Constructor and Initialize
@@ -28,8 +32,8 @@ namespace ChameleonChase.Screens
         {
             // Set the screen up here instead of in the Constructor to avoid
             // exceptions occurring during the constructor.
-			
-			
+
+            player = new CrippleMan(FlatRedBallServices.GlobalContentManager);
 			
 			
 			
@@ -56,6 +60,8 @@ namespace ChameleonChase.Screens
 
         public override void Activity(bool firstTimeCalled)
         {
+            player.Activity();
+
             base.Activity(firstTimeCalled);
         }
 

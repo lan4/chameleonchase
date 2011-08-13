@@ -83,7 +83,7 @@ namespace ChameleonChase
 
             this.XVelocity = 5.0f;
 
-            SpriteManager.Camera.AttachTo(this, false);
+            SpriteManager.Camera.XVelocity = 5.0f;
         }
 
         public void Move()
