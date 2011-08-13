@@ -5,6 +5,7 @@ using System.Text;
 using FlatRedBall;
 using FlatRedBall.Graphics;
 using FlatRedBall.Math.Geometry;
+using FlatRedBall.Input;
 
 
 // Be sure to replace:
@@ -21,8 +22,8 @@ namespace ChameleonChase
 
         // Here you'd define things that your Entity contains, like Sprites
         // or Circles:
-        // private Sprite mVisibleRepresentation;
-        // private Circle mCollision;
+        private Sprite mVisibleRepresentation;
+        private Circle mCollision;
 
         // Keep the ContentManager for easy access:
         string mContentManagerName;
@@ -35,10 +36,10 @@ namespace ChameleonChase
         // Here you'd define properties for things
         // you want to give other Entities and game code
         // access to, like your Collision property:
-        //public Circle Collision
-        //{
-        //    get { return mCollision; }
-        //}
+        public Circle Collision
+        {
+            get { return mCollision; }
+        }
 
         #endregion
 
@@ -74,14 +75,29 @@ namespace ChameleonChase
             // Here you may want to add your objects to the engine.  Use layerToAddTo
             // when adding if your Entity supports layers.  Make sure to attach things
             // to this if appropriate.
-            //mVisibleRepresentation = SpriteManager.AddSprite("redball.bmp", contentManagerName);
-            //mVisibleRepresentation.AttachTo(this, false);
+            mVisibleRepresentation = SpriteManager.AddSprite("redball.bmp", mContentManagerName);
+            mVisibleRepresentation.AttachTo(this, false);
 
-            //mCollision = ShapeManager.AddCircle();
-            //mCollision.AttachTo(this, false);
+            mCollision = ShapeManager.AddCircle();
+            mCollision.AttachTo(this, false);
+
+            this.XVelocity = 5.0f;
+
+            SpriteManager.Camera.AttachTo(this, false);
         }
 
+        public void Move()
+        {
+            if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Up))
+            {
+                
+            }
+            else if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Down))
+            {
+                this.Z = -1.0f;
+            }
 
+        }
 
         public virtual void Activity()
         {
@@ -94,8 +110,8 @@ namespace ChameleonChase
             SpriteManager.RemovePositionedObject(this);
 
             // Remove any other objects you've created:
-            //SpriteManager.RemoveSprite(mVisibleRepresentation);
-            //ShapeManager.Remove(mCollision);
+            SpriteManager.RemoveSprite(mVisibleRepresentation);
+            ShapeManager.Remove(mCollision);
         }
 
         #endregion
