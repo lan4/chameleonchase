@@ -22,6 +22,8 @@ namespace ChameleonChase
     {
         GraphicsDeviceManager graphics;
 
+        Chameleon mChameleon;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -43,6 +45,9 @@ namespace ChameleonChase
 
             ScreenManager.Start(typeof(GameScreen).FullName);
 
+            mChameleon = new Chameleon(FlatRedBallServices.GlobalContentManager);
+
+            Sprite reference = SpriteManager.AddSprite("redball.bmp");
 
             base.Initialize();
         }
