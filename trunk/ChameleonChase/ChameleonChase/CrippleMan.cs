@@ -31,7 +31,6 @@ namespace ChameleonChase
         int railPos;
         bool isJumping;
         float groundLevel;
-        int fuelAmount;
 
         #endregion
 
@@ -90,14 +89,14 @@ namespace ChameleonChase
 
             railPos = 1;
             isJumping = false;
-            fuelAmount = 1000;
 
             SpriteManager.Camera.XVelocity = 50.0f;
         }
 
         public void Move()
         {
-            if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Up) || InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.W))
+            if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Up) || 
+                InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.W))
             {
                 if (railPos != 2)
                 {
@@ -106,7 +105,8 @@ namespace ChameleonChase
                     railPos += 1;
                 }
             }
-            else if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Down) || InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.S))
+            else if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Down) || 
+                     InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.S))
             {
                 if (railPos != 0)
                 {
@@ -114,6 +114,21 @@ namespace ChameleonChase
                     this.Y -= 5.0f;
                     railPos -= 1;
                 }
+            }
+
+            if (InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.Right) || 
+                InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.D))
+            {
+                this.XVelocity = 70.0f;
+            }
+            else if (InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.Left) || 
+                     InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.A))
+            {
+                this.XVelocity = 30.0f;
+            }
+            else
+            {
+                this.XVelocity = 50.0f;
             }
 
             groundLevel = this.Y;
@@ -139,22 +154,18 @@ namespace ChameleonChase
             }
         }
 
-        public void Boost()
-        {
-            if (InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) && fuelAmount > 0)
-            {
-                this.XVelocity = 70.0f;
-                fuelAmount--;
-            }
-            else
-            {
-                this.XVelocity = 50.0f;
-            }
-        }
-
         public void KeepOnScreen()
         {
-            
+            float posDiff = this.X - SpriteManager.Camera.X;
+
+            if (posDiff > 20.0f || posDiff < -20.0f)
+            {
+                this.XVelocity = 50.0f;
+                if (posDiff > 0.0f)
+                    this.X -= 0.5f;
+                else if (posDiff < 0.0f)
+                    this.X += 0.5f;
+            }
         }
 
         public virtual void Activity()
@@ -166,7 +177,6 @@ namespace ChameleonChase
             }
 
             Jump();
-            Boost();
 
             KeepOnScreen();
         }
