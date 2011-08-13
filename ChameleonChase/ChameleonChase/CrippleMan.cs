@@ -28,6 +28,10 @@ namespace ChameleonChase
         // Keep the ContentManager for easy access:
         string mContentManagerName;
 
+        int railPos;
+        bool isJumping;
+        float groundLevel;
+
         #endregion
 
         #region Properties
@@ -59,7 +63,7 @@ namespace ChameleonChase
         {
             // Here you can preload any content you will be using
             // like .scnx files or texture files.
-
+            
             if (addToManagers)
             {
                 AddToManagers(null);
@@ -83,6 +87,9 @@ namespace ChameleonChase
 
             this.XVelocity = 5.0f;
 
+            railPos = 1;
+            isJumping = false;
+
             SpriteManager.Camera.XVelocity = 5.0f;
         }
 
@@ -90,18 +97,52 @@ namespace ChameleonChase
         {
             if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Up))
             {
-                
+                if (railPos != 2)
+                {
+                    this.X += 5.0f;
+                    this.Y += 5.0f;
+                    railPos += 1;
+                }
             }
             else if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Down))
             {
-                this.Z = -1.0f;
+                if (railPos != 0)
+                {
+                    this.X -= 5.0f;
+                    this.Y -= 5.0f;
+                    railPos -= 1;
+                }
             }
 
+            groundLevel = this.Y;
+        }
+
+        public void Jump()
+        {
+            if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Space))
+            {
+                isJumping = true;
+                this.YVelocity = 10.0f;
+                this.YAcceleration = -5.0f;
+            }
+            else if (isJumping)
+            {
+                if (this.Y <= groundLevel)
+                {
+                    this.Y = groundLevel;
+                    this.YVelocity = 0.0f;
+                    this.YAcceleration = 0.0f;
+                    isJumping = false;
+                }
+            }
         }
 
         public virtual void Activity()
         {
             // This code should do things like set Animations, respond to input, and so on.
+            if (!isJumping)
+                Move();
+            Jump();
         }
 
         public virtual void Destroy()
