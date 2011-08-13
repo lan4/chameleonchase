@@ -17,12 +17,32 @@ namespace ChameleonChase
 {
     public class Chameleon : PositionedObject
     {
+        #region Constants
+        private const float DEFAULT_CHAMEL_VELOCITY = 51.0f;
+        private const float SLOW_CHAMEL_VELOCITY = 45.0f;
+        private const float DEFAULT_CHAMEL_POS = -10.0f;
+        
+        private const float LASER_VELOCITY = 10.0f;
+        private const float LASER_TRIGGER_DISTANCE = 100.0f;
+        private const int LASER_ROW_LENGTH = 90;
+
+        private const float TONGUE_OFFSET = 200.0f;
+
+        #endregion
+
         #region Fields
 
         // Here you'd define things that your Entity contains, like Sprites
         // or Circles:
         private Sprite mVisibleRepresentation;
         private Circle mCollision;
+
+        private Circle mLaser;
+        private Polygon mTongue;
+
+        private float mLastLaserPos;
+        private bool mIsLasering;
+        private int mLaserDistance;
 
         // Keep the ContentManager for easy access:
         string mContentManagerName;
@@ -80,16 +100,33 @@ namespace ChameleonChase
             mCollision = ShapeManager.AddCircle();
             mCollision.AttachTo(this, false);
 
-            this.X = -10.0f;
-            this.XVelocity = 4.9f;
-        }
+            mLaser = ShapeManager.AddCircle();
+            mLaser.AttachTo(this, false);
+            mLaser.Visible = false;
 
+            this.X = DEFAULT_CHAMEL_POS;
+            this.XVelocity = DEFAULT_CHAMEL_VELOCITY;
+
+            mLaser.RelativeX = DEFAULT_CHAMEL_POS;
+            //mLaser.RelativeXVelocity = LASER_VELOCITY;
+            this.mLastLaserPos = DEFAULT_CHAMEL_POS;
+        }
 
 
         public virtual void Activity()
         {
             // This code should do things like set Animations, respond to input, and so on.
-            
+            bool activateLaser = (this.X - mLastLaserPos > LASER_TRIGGER_DISTANCE);
+
+            //Console.Out.WriteLine("Activate Laser: " + activateLaser);
+
+            if (mIsLasering)
+                activateLaser = true;
+
+            if (activateLaser)
+            {
+                LaserAttack();
+            }
 
         }
 
@@ -103,15 +140,51 @@ namespace ChameleonChase
             ShapeManager.Remove(mCollision);
         }
 
-        #region Private Methods
-
-        private void Move( )
+        #region Attacks
+               
+        private void LaserAttack()
         {
-            
+            if (!mIsLasering)
+            {
+                mLaser.RelativeY = 5.0f;
+                mLaser.RelativeX = 0.0f;
+                mLaser.Visible = true;
+
+                mLaser.RelativeXVelocity = LASER_VELOCITY;
+                mIsLasering = true;
+                mLaserDistance = 0;
+            }
+            else
+            {
+                if (mLaserDistance == LASER_ROW_LENGTH)
+                {
+                    mLaser.RelativeY = 0.0f;
+                    mLaser.RelativeXVelocity = -(LASER_VELOCITY);
+                }
+                else if (mLaserDistance == (LASER_ROW_LENGTH * 2))
+                {
+                    mLaser.RelativeY = -5.0f;
+                    mLaser.RelativeXVelocity = LASER_VELOCITY;
+                }
+                else if (mLaserDistance == (LASER_ROW_LENGTH * 3))
+                {
+                    mLaser.RelativeXVelocity = 0;
+                    mLaser.Visible = false;
+                    mIsLasering = false;
+                    mLastLaserPos = this.X;
+                }
+
+                mLaserDistance++;
+            }
+        }
+
+        private void TongueAttack()
+        {
+
         }
 
         #endregion
-
+        
         #endregion
     }
 }
