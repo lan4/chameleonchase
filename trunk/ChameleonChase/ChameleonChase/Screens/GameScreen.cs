@@ -19,6 +19,7 @@ namespace ChameleonChase.Screens
 
         int score;
         Text scoreText;
+        Text hpText;
 
         #region Methods
 
@@ -60,6 +61,12 @@ namespace ChameleonChase.Screens
             scoreText.RelativeY = 15.0f;
             scoreText.RelativeZ = -40.0f;
             scoreText.SetColor(0, 0, 0);
+
+            hpText = TextManager.AddText("" + player.HP);
+            hpText.AttachTo(SpriteManager.Camera, false);
+            hpText.RelativeY = 15.0f;
+            hpText.RelativeZ = -40.0f;
+            hpText.SetColor(0, 0, 0);
 			
 			// AddToManagers should be called LAST in this method:
 			if(addToManagers)
@@ -90,14 +97,27 @@ namespace ChameleonChase.Screens
             }
         }
 
+        private void CheckCollisions()
+        {
+            foreach (Obstacle item in obstaclePool)
+            {
+                if (item.Collision.CollideAgainst(player.Collision) && !player.IsDamaged)
+                {
+                    player.OnHit();
+                }
+            }
+        }
+
         public override void Activity(bool firstTimeCalled)
         {
             player.Activity();
             chameleon.Activity();
             PlaceObstacles();
+            CheckCollisions();
 
             score = (int) player.X;
             scoreText.DisplayText = "Score:  " + score;
+            hpText.DisplayText = "" + player.HP;
 
             base.Activity(firstTimeCalled);
         }

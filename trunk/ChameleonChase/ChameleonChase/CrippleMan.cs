@@ -32,6 +32,11 @@ namespace ChameleonChase
         bool isJumping;
         float groundLevel;
 
+        bool isDamaged;
+        int hp;
+
+        double damageTime;
+
         #endregion
 
         #region Properties
@@ -48,6 +53,16 @@ namespace ChameleonChase
         public int RailPosition
         {
             get { return railPos; }
+        }
+
+        public bool IsDamaged
+        {
+            get { return isDamaged; }
+        }
+
+        public int HP
+        {
+            get { return hp; }
         }
 
         #endregion
@@ -104,6 +119,8 @@ namespace ChameleonChase
 
             railPos = 1;
             isJumping = false;
+            isDamaged = false;
+            hp = 10;
 
             SpriteManager.Camera.XVelocity = 25.0f;
 
@@ -198,12 +215,34 @@ namespace ChameleonChase
 
         public void OnHit()
         {
+            if (!isDamaged)
+            {
+                isDamaged = true;
+                hp--;
+                damageTime = TimeManager.CurrentTime + 2;
+            }
+        }
 
+        public void FlashSprite()
+        {
+            mVisibleRepresentation.Visible = !mVisibleRepresentation.Visible;
+
+            if (TimeManager.CurrentTime > damageTime)
+            {
+                isDamaged = false;
+                mVisibleRepresentation.Visible = true;
+            }
         }
 
         public virtual void Activity()
         {
             // This code should do things like set Animations, respond to input, and so on.
+
+            if (isDamaged)
+            {
+                FlashSprite();
+            }
+
             if (!isJumping)
             {
                 Move();
