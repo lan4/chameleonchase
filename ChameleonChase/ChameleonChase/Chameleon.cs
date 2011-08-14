@@ -46,6 +46,7 @@ namespace ChameleonChase
         private Sprite heado0;
 
         private Sprite tongueSprite;
+        private Sprite sawSprite;
 
         //private Circle mCollision;
         private Polygon mCollision;
@@ -246,6 +247,19 @@ namespace ChameleonChase
             mLaser.AttachTo(this, false);
             mLaser.Visible = false;
 
+            sawSprite = SpriteManager.AddSprite("SawBlade.png", mContentManagerName);
+
+            texturePixelWidth = sawSprite.Texture.Width;
+            texturePixelHeight = sawSprite.Texture.Height;
+
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(sawSprite.Z);
+
+            sawSprite.ScaleX = .25f * texturePixelWidth / pixelsPerUnit;
+            sawSprite.ScaleY = .25f * texturePixelHeight / pixelsPerUnit;
+
+            sawSprite.AttachTo(mLaser, false);
+            sawSprite.Visible = true;
+
             mTongue = ShapeManager.AddAxisAlignedRectangle();
             mTongue.ScaleX = 0.5f;
             mTongue.AttachTo(this, false);
@@ -340,7 +354,7 @@ namespace ChameleonChase
             {
                 mLaser.RelativeY = RAIL_DISTANCE;
                 mLaser.RelativeX = 0.0f;
-                mLaser.Visible = true;
+                sawSprite.Visible = true;
 
                 mLaser.RelativeXVelocity = LASER_VELOCITY;
                 mIsLasering = true;
@@ -365,7 +379,7 @@ namespace ChameleonChase
                 {
                     mLaserRail = -1;
                     mLaser.RelativeXVelocity = 0;
-                    mLaser.Visible = false;
+                    sawSprite.Visible = false;
                     mIsLasering = false;
                     mLastLaserPos = this.X + (Screens.GameScreen.SpeedMod * 20);
                 }
