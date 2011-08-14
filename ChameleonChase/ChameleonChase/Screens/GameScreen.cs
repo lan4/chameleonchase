@@ -16,6 +16,9 @@ namespace ChameleonChase.Screens
 
         Chameleon chameleon;
 
+        int score;
+        Text scoreText;
+
         #region Methods
 
         #region Constructor and Initialize
@@ -40,8 +43,15 @@ namespace ChameleonChase.Screens
             chameleon = new Chameleon(FlatRedBallServices.GlobalContentManager);
 
             Sprite referencePoint = SpriteManager.AddSprite("redball.bmp", FlatRedBallServices.GlobalContentManager);
-			
-			
+
+            score = 0;
+
+            scoreText = TextManager.AddText("" + score);
+            scoreText.AttachTo(SpriteManager.Camera, false);
+            scoreText.RelativeX = -15.0f;
+            scoreText.RelativeY = 15.0f;
+            scoreText.RelativeZ = -40.0f;
+            scoreText.SetColor(0, 0, 0);
 			
 			// AddToManagers should be called LAST in this method:
 			if(addToManagers)
@@ -63,8 +73,10 @@ namespace ChameleonChase.Screens
         public override void Activity(bool firstTimeCalled)
         {
             player.Activity();
-
             chameleon.Activity();
+
+            score = (int) player.X;
+            scoreText.DisplayText = "" + score;
 
             base.Activity(firstTimeCalled);
         }

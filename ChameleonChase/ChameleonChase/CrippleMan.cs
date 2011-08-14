@@ -91,6 +91,19 @@ namespace ChameleonChase
             isJumping = false;
 
             SpriteManager.Camera.XVelocity = 50.0f;
+
+            Sprite background = SpriteManager.AddSprite("TestBackground.png", mContentManagerName);
+
+            float texturePixelWidth = background.Texture.Width;
+            float texturePixelHeight = background.Texture.Height;
+
+            float pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(background.Z);
+
+            background.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
+            background.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
+
+            background.AttachTo(SpriteManager.Camera, false);
+            background.RelativeZ = -50.0f;
         }
 
         public void Move()
@@ -100,8 +113,8 @@ namespace ChameleonChase
             {
                 if (railPos != 2)
                 {
-                    this.X += 5.0f;
-                    this.Y += 5.0f;
+                    this.X += 10.0f;
+                    this.Y += 10.0f;
                     railPos += 1;
                 }
             }
@@ -110,8 +123,8 @@ namespace ChameleonChase
             {
                 if (railPos != 0)
                 {
-                    this.X -= 5.0f;
-                    this.Y -= 5.0f;
+                    this.X -= 10.0f;
+                    this.Y -= 10.0f;
                     railPos -= 1;
                 }
             }
@@ -166,6 +179,11 @@ namespace ChameleonChase
                 else if (posDiff < 0.0f)
                     this.X += 0.2f;
             }
+        }
+
+        public void OnHit()
+        {
+
         }
 
         public virtual void Activity()
