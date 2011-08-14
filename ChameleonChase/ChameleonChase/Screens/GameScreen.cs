@@ -60,7 +60,7 @@ namespace ChameleonChase.Screens
                 boosterPool.Add(new Booster(FlatRedBallServices.GlobalContentManager));
             }
 
-            Sprite referencePoint = SpriteManager.AddSprite("redball.bmp", FlatRedBallServices.GlobalContentManager);
+            //Sprite referencePoint = SpriteManager.AddSprite("redball.bmp", FlatRedBallServices.GlobalContentManager);
 
             score = 0;
 

@@ -289,6 +289,11 @@ namespace ChameleonChase
                     this.Y -= 10.0f;
                     railPos -= 1;
                 }
+
+                this.Y = groundLevel;
+                this.YVelocity = 0.0f;
+                this.YAcceleration = 0.0f;
+                isJumping = false;
             }
         }
 
