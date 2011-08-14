@@ -45,14 +45,14 @@ namespace ChameleonChase
         private Sprite heado2;
         private Sprite heado0;
 
-        private Sprite tongueSprite;
-        private Sprite sawSprite;
+        private Sprite mTongue;
+        private Sprite mLaser;
 
         //private Circle mCollision;
         private Polygon mCollision;
 
-        private Circle mLaser;
-        private AxisAlignedRectangle mTongue;
+        private Circle mLaserCollision;
+        private AxisAlignedRectangle mTongueCollision;
 
         private float mLastLaserPos;
         private bool mIsLasering;
@@ -80,12 +80,12 @@ namespace ChameleonChase
 
         public Circle Laser
         {
-            get { return mLaser; }
+            get { return mLaserCollision; }
         }
 
         public AxisAlignedRectangle Tongue
         {
-            get { return mTongue; }
+            get { return mTongueCollision; }
         }
 
         public static int TongueRail;
@@ -243,41 +243,41 @@ namespace ChameleonChase
             mVisibleRepresentation.Visible = false;
             mCollision.Visible = false;
 
-            mLaser = ShapeManager.AddCircle();
-            mLaser.AttachTo(this, false);
-            mLaser.Visible = false;
+            mLaserCollision = ShapeManager.AddCircle();
+            mLaserCollision.AttachTo(this, false);
+            mLaserCollision.Visible = false;
 
-            sawSprite = SpriteManager.AddSprite("SawBlade.png", mContentManagerName);
+            mLaser = SpriteManager.AddSprite("SawBlade.png", mContentManagerName);
 
-            texturePixelWidth = sawSprite.Texture.Width;
-            texturePixelHeight = sawSprite.Texture.Height;
+            texturePixelWidth = mLaser.Texture.Width;
+            texturePixelHeight = mLaser.Texture.Height;
 
-            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(sawSprite.Z);
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(mLaser.Z);
 
-            sawSprite.ScaleX = .25f * texturePixelWidth / pixelsPerUnit;
-            sawSprite.ScaleY = .25f * texturePixelHeight / pixelsPerUnit;
+            mLaser.ScaleX = .25f * texturePixelWidth / pixelsPerUnit;
+            mLaser.ScaleY = .25f * texturePixelHeight / pixelsPerUnit;
 
-            sawSprite.AttachTo(mLaser, false);
-            sawSprite.Visible = true;
+            mLaser.AttachTo(mLaserCollision, false);
+            mLaser.Visible = true;
 
-            mTongue = ShapeManager.AddAxisAlignedRectangle();
-            mTongue.ScaleX = 0.5f;
+            mTongueCollision = ShapeManager.AddAxisAlignedRectangle();
+            mTongueCollision.ScaleX = 0.5f;
+            mTongueCollision.AttachTo(this, false);
+            mTongueCollision.Visible = false;
+
+            mTongue = SpriteManager.AddSprite("Tongue.png", mContentManagerName);
+            mTongue.ScaleX = mTongueCollision.ScaleX;
             mTongue.AttachTo(this, false);
             mTongue.Visible = false;
-
-            tongueSprite = SpriteManager.AddSprite("Tongue.png", mContentManagerName);
-            tongueSprite.ScaleX = mTongue.ScaleX;
-            tongueSprite.AttachTo(this, false);
-            tongueSprite.Visible = false;
 
             this.X = DEFAULT_CHAMEL_POS;
             this.XVelocity = DEFAULT_CHAMEL_VELOCITY;
 
-            mLaser.RelativeX = DEFAULT_CHAMEL_POS;
+            mLaserCollision.RelativeX = DEFAULT_CHAMEL_POS;
             this.mLastLaserPos = DEFAULT_CHAMEL_POS;
             mLaserRail = 3;
 
-            mTongue.RelativeX = TONGUE_START;
+            mTongueCollision.RelativeX = TONGUE_START;
             this.mLastTonguePos = 0.0f;
 
             TongueRail = -1;
@@ -311,12 +311,12 @@ namespace ChameleonChase
                 TongueAttack();
             }
 
-            if (mTongue.Visible)
+            if (mTongueCollision.Visible)
                 TongueRail = mTongueRail;
             else
                 TongueRail = -1;
 
-            //if (mTongue.Visible)
+            //if (mTongueCollision.Visible)
             //{
             //    if (mTongueRail == 1)
             //    {
@@ -352,34 +352,34 @@ namespace ChameleonChase
         {
             if (!mIsLasering)
             {
-                mLaser.RelativeY = RAIL_DISTANCE;
-                mLaser.RelativeX = 0.0f;
-                sawSprite.Visible = true;
+                mLaserCollision.RelativeY = RAIL_DISTANCE;
+                mLaserCollision.RelativeX = 0.0f;
+                mLaser.Visible = true;
 
-                mLaser.RelativeXVelocity = LASER_VELOCITY;
+                mLaserCollision.RelativeXVelocity = LASER_VELOCITY;
                 mIsLasering = true;
                 mLaserRail = 2;
             }
             else
             {
-                if ((mLaserRail == 2) && (mLaser.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0)))
+                if ((mLaserRail == 2) && (mLaserCollision.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0)))
                 {
                     mLaserRail = 1;
-                    mLaser.RelativeY = 0.0f;
-                    mLaser.RelativeXVelocity = -(LASER_VELOCITY);
+                    mLaserCollision.RelativeY = 0.0f;
+                    mLaserCollision.RelativeXVelocity = -(LASER_VELOCITY);
                 }
-                else if ((mLaserRail == 1) && (mLaser.X <= this.X - 5.0f))
+                else if ((mLaserRail == 1) && (mLaserCollision.X <= this.X - 5.0f))
                 {
                     mLaserRail = 0;
-                    mLaser.RelativeY = -RAIL_DISTANCE;
-                    mLaser.RelativeXVelocity = LASER_VELOCITY;
-                    //mLaser.RelativeX = this.X - 7.0f;
+                    mLaserCollision.RelativeY = -RAIL_DISTANCE;
+                    mLaserCollision.RelativeXVelocity = LASER_VELOCITY;
+                    //mLaserCollision.RelativeX = this.X - 7.0f;
                 }
-                else if ((mLaserRail == 0) && (mLaser.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0)))
+                else if ((mLaserRail == 0) && (mLaserCollision.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0)))
                 {
                     mLaserRail = -1;
-                    mLaser.RelativeXVelocity = 0;
-                    sawSprite.Visible = false;
+                    mLaserCollision.RelativeXVelocity = 0;
+                    mLaser.Visible = false;
                     mIsLasering = false;
                     mLastLaserPos = this.X + (Screens.GameScreen.SpeedMod * 20);
                 }
@@ -387,18 +387,18 @@ namespace ChameleonChase
                 #region Old Laser Code
                 //if (mLaserDistance == LASER_ROW_LENGTH)
                 //{
-                //    mLaser.RelativeY = 0.0f;
-                //    mLaser.RelativeXVelocity = -(LASER_VELOCITY);
+                //    mLaserCollision.RelativeY = 0.0f;
+                //    mLaserCollision.RelativeXVelocity = -(LASER_VELOCITY);
                 //}
                 //else if (mLaserDistance == (LASER_ROW_LENGTH * 2))
                 //{
-                //    mLaser.RelativeY = -5.0f;
-                //    mLaser.RelativeXVelocity = LASER_VELOCITY;
+                //    mLaserCollision.RelativeY = -5.0f;
+                //    mLaserCollision.RelativeXVelocity = LASER_VELOCITY;
                 //}
                 //else if (mLaserDistance == (LASER_ROW_LENGTH * 3))
                 //{
-                //    mLaser.RelativeXVelocity = 0;
-                //    mLaser.Visible = false;
+                //    mLaserCollision.RelativeXVelocity = 0;
+                //    mLaserCollision.Visible = false;
                 //    mIsLasering = false;
                 //    mLastLaserPos = this.X;
                 //}
@@ -413,34 +413,34 @@ namespace ChameleonChase
         {
             if (!mIsLicking)
             {
-                tongueSprite.Visible = true;
+                mTongue.Visible = true;
 
+                mTongueCollision.RelativeXVelocity = TONGUE_VELOCITY;
                 mTongue.RelativeXVelocity = TONGUE_VELOCITY;
-                tongueSprite.RelativeXVelocity = TONGUE_VELOCITY;
 
                 mIsLicking = true;
                 mTongueRail = CreateRandomNumber();
 
                 if (mTongueRail == 2)
                 {
-                    mTongue.RelativeX = TONGUE_START;
-                    mTongue.RelativeY = RAIL_DISTANCE;
-                    tongueSprite.RelativeX = mTongue.RelativeX;
-                    tongueSprite.RelativeY = mTongue.RelativeY;
+                    mTongueCollision.RelativeX = TONGUE_START;
+                    mTongueCollision.RelativeY = RAIL_DISTANCE;
+                    mTongue.RelativeX = mTongueCollision.RelativeX;
+                    mTongue.RelativeY = mTongueCollision.RelativeY;
                 }
                 else if (mTongueRail == 1)
                 {
-                    mTongue.RelativeX = TONGUE_START - 5.0f;
-                    mTongue.RelativeY = 0.0f;
-                    tongueSprite.RelativeX = mTongue.RelativeX;
-                    tongueSprite.RelativeY = mTongue.RelativeY;
+                    mTongueCollision.RelativeX = TONGUE_START - 5.0f;
+                    mTongueCollision.RelativeY = 0.0f;
+                    mTongue.RelativeX = mTongueCollision.RelativeX;
+                    mTongue.RelativeY = mTongueCollision.RelativeY;
                 }
                 else if (mTongueRail == 0)
                 {
-                    mTongue.RelativeX = TONGUE_START - 10.0f;
-                    mTongue.RelativeY = -(RAIL_DISTANCE);
-                    tongueSprite.RelativeX = mTongue.RelativeX;
-                    tongueSprite.RelativeY = mTongue.RelativeY;
+                    mTongueCollision.RelativeX = TONGUE_START - 10.0f;
+                    mTongueCollision.RelativeY = -(RAIL_DISTANCE);
+                    mTongue.RelativeX = mTongueCollision.RelativeX;
+                    mTongue.RelativeY = mTongueCollision.RelativeY;
                 }
 
                 if (mTongueRail == 0)
@@ -461,14 +461,14 @@ namespace ChameleonChase
             }
             else
             {
+                mTongueCollision.ScaleX += 0.25f;
                 mTongue.ScaleX += 0.25f;
-                tongueSprite.ScaleX += 0.25f;
 
-                if (mTongue.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0) + 5.0f)
+                if (mTongueCollision.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0) + 5.0f)
                 {
-                    mTongue.RelativeXVelocity = 0.0f;
-                    mTongue.ScaleX = 0.5f;
-                    tongueSprite.Visible = false;
+                    mTongueCollision.RelativeXVelocity = 0.0f;
+                    mTongueCollision.ScaleX = 0.5f;
+                    mTongue.Visible = false;
 
                     mIsLicking = false;
                     mLastTonguePos = this.X + (Screens.GameScreen.SpeedMod * 20);
