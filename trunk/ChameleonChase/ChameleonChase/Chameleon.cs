@@ -37,6 +37,14 @@ namespace ChameleonChase
         // Here you'd define things that your Entity contains, like Sprites
         // or Circles:
         private Sprite mVisibleRepresentation;
+        private Sprite head1;
+        private Sprite head2;
+        private Sprite head3;
+
+        private Sprite heado1;
+        private Sprite heado2;
+        private Sprite heado3;
+
         //private Circle mCollision;
         private Polygon mCollision;
 
@@ -53,8 +61,6 @@ namespace ChameleonChase
 
         // Keep the ContentManager for easy access:
         string mContentManagerName;
-
-        private Line laserLine;
 
         #endregion
 
@@ -115,12 +121,97 @@ namespace ChameleonChase
             // Here you may want to add your objects to the engine.  Use layerToAddTo
             // when adding if your Entity supports layers.  Make sure to attach things
             // to this if appropriate.
+            
+
+            head1 = SpriteManager.AddSprite("Cham_Closed.png", mContentManagerName);
+
+            float texturePixelWidth = head1.Texture.Width;
+            float texturePixelHeight = head1.Texture.Height;
+
+            float pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(head1.Z);
+
+            head1.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
+            head1.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
+
+            head1.AttachTo(this, false);
+
+            head2 = SpriteManager.AddSprite("Cham_Closed.png", mContentManagerName);
+
+            texturePixelWidth = head2.Texture.Width;
+            texturePixelHeight = head2.Texture.Height;
+
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(head2.Z);
+
+            head2.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
+            head2.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
+
+            head2.AttachTo(this, false);
+            head2.RelativeX = 5.0f;
+            head2.RelativeY = 10.0f;
+
+            head3 = SpriteManager.AddSprite("Cham_Closed.png", mContentManagerName);
+
+            texturePixelWidth = head3.Texture.Width;
+            texturePixelHeight = head3.Texture.Height;
+
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(head3.Z);
+
+            head3.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
+            head3.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
+
+            head3.AttachTo(this, false);
+            head3.RelativeX = -5.0f;
+            head3.RelativeY = -10.0f;
+
+            heado1 = SpriteManager.AddSprite("Cham_Open.png", mContentManagerName);
+
+            texturePixelWidth = heado1.Texture.Width;
+            texturePixelHeight = heado1.Texture.Height;
+
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(heado1.Z);
+
+            heado1.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
+            heado1.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
+
+            heado1.AttachTo(this, false);
+            heado1.Visible = false;
+
+            heado2 = SpriteManager.AddSprite("Cham_Open.png", mContentManagerName);
+
+            texturePixelWidth = heado2.Texture.Width;
+            texturePixelHeight = heado2.Texture.Height;
+
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(heado2.Z);
+
+            heado2.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
+            heado2.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
+
+            heado2.AttachTo(this, false);
+            heado2.RelativeX = 5.0f;
+            heado2.RelativeY = 10.0f;
+            heado2.Visible = false;
+
+            heado3 = SpriteManager.AddSprite("Cham_Open.png", mContentManagerName);
+
+            texturePixelWidth = heado3.Texture.Width;
+            texturePixelHeight = heado3.Texture.Height;
+
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(heado3.Z);
+
+            heado3.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
+            heado3.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
+
+            heado3.AttachTo(this, false);
+            heado3.RelativeX = -5.0f;
+            heado3.RelativeY = -10.0f;
+            heado3.Visible = false;
+
             mVisibleRepresentation = SpriteManager.AddSprite("TankBody.png", mContentManagerName);
 
-            float texturePixelWidth = mVisibleRepresentation.Texture.Width;
-            float texturePixelHeight = mVisibleRepresentation.Texture.Height;
+            texturePixelWidth = mVisibleRepresentation.Texture.Width;
+            texturePixelHeight = mVisibleRepresentation.Texture.Height;
 
-            float pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(mVisibleRepresentation.Z);
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(mVisibleRepresentation.Z);
 
             mVisibleRepresentation.ScaleX = .25f * texturePixelWidth / pixelsPerUnit;
             mVisibleRepresentation.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
@@ -166,19 +257,6 @@ namespace ChameleonChase
             this.mLastTonguePos = 0.0f;
 
             TongueRail = -1;
-
-            laserLine = ShapeManager.AddLine();
-            
-
-        }
-
-        private void DrawLaser()
-        {
-            laserLine.X = SpriteManager.Camera.X;
-            laserLine.Y = SpriteManager.Camera.Y;
-            laserLine.RelativePoint1 = new Point3D((double)this.X, (double)this.Y);
-            laserLine.RelativePoint2 = new Point3D((double)this.X - mLaser.X, (double)this.X - mLaser.Y);
-            laserLine.Visible = mLaser.Visible;
         }
 
         public virtual void Activity()
@@ -186,8 +264,6 @@ namespace ChameleonChase
             // This code should do things like set Animations, respond to input, and so on.
             bool activateLaser = (this.X - mLastLaserPos > LASER_TRIGGER_DISTANCE);
             bool activateTongue = (this.X - mLastTonguePos > TONGUE_TRIGGER_DISTANCE);
-
-            DrawLaser();
 
             //Console.Out.WriteLine("Activate Laser: " + activateLaser);
 
@@ -217,7 +293,24 @@ namespace ChameleonChase
             else
                 TongueRail = -1;
 
-            
+            if (mTongue.Visible)
+            {
+                if (mTongueRail == 1)
+                {
+                    head3.Visible = false;
+                    heado3.Visible = true;
+                }
+                else if (mTongueRail == 2)
+                {
+                    head2.Visible = false;
+                    heado2.Visible = true;
+                }
+                else if (mTongueRail == 3)
+                {
+                    head1.Visible = false;
+                    heado1.Visible = true;
+                }
+            }
         }
 
         public virtual void Destroy()
