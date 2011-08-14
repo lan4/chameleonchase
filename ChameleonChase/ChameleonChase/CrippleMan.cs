@@ -111,6 +111,7 @@ namespace ChameleonChase
 
             mCollision = ShapeManager.AddCircle();
             mCollision.AttachTo(this, false);
+            mCollision.Visible = false;
 
             this.XVelocity = 25.0f;
 

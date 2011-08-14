@@ -96,6 +96,7 @@ namespace ChameleonChase
 
             mCollision = ShapeManager.AddCircle();
             mCollision.AttachTo(this, false);
+            mCollision.Visible = false;
 
             railPos = 0;
         }

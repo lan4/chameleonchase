@@ -20,7 +20,7 @@ namespace ChameleonChase
         #region Constants
         private const float DEFAULT_CHAMEL_VELOCITY = 25.0f;
         private const float DEFAULT_CHAMEL_POS = -10.0f;
-        
+
         private const float LASER_VELOCITY = 20.0f;
         private const float LASER_TRIGGER_DISTANCE = 300.0f;
 
@@ -39,11 +39,13 @@ namespace ChameleonChase
         private Sprite mVisibleRepresentation;
         private Sprite head1;
         private Sprite head2;
-        private Sprite head3;
+        private Sprite head0;
 
         private Sprite heado1;
         private Sprite heado2;
-        private Sprite heado3;
+        private Sprite heado0;
+
+        private Sprite tongueSprite;
 
         //private Circle mCollision;
         private Polygon mCollision;
@@ -121,7 +123,7 @@ namespace ChameleonChase
             // Here you may want to add your objects to the engine.  Use layerToAddTo
             // when adding if your Entity supports layers.  Make sure to attach things
             // to this if appropriate.
-            
+
 
             head1 = SpriteManager.AddSprite("Cham_Closed.png", mContentManagerName);
 
@@ -134,6 +136,7 @@ namespace ChameleonChase
             head1.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
 
             head1.AttachTo(this, false);
+            head1.RelativeY = 2.0f;
 
             head2 = SpriteManager.AddSprite("Cham_Closed.png", mContentManagerName);
 
@@ -147,21 +150,21 @@ namespace ChameleonChase
 
             head2.AttachTo(this, false);
             head2.RelativeX = 5.0f;
-            head2.RelativeY = 10.0f;
+            head2.RelativeY = 12.0f;
 
-            head3 = SpriteManager.AddSprite("Cham_Closed.png", mContentManagerName);
+            head0 = SpriteManager.AddSprite("Cham_Closed.png", mContentManagerName);
 
-            texturePixelWidth = head3.Texture.Width;
-            texturePixelHeight = head3.Texture.Height;
+            texturePixelWidth = head0.Texture.Width;
+            texturePixelHeight = head0.Texture.Height;
 
-            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(head3.Z);
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(head0.Z);
 
-            head3.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
-            head3.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
+            head0.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
+            head0.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
 
-            head3.AttachTo(this, false);
-            head3.RelativeX = -5.0f;
-            head3.RelativeY = -10.0f;
+            head0.AttachTo(this, false);
+            head0.RelativeX = -5.0f;
+            head0.RelativeY = -8.0f;
 
             heado1 = SpriteManager.AddSprite("Cham_Open.png", mContentManagerName);
 
@@ -176,6 +179,8 @@ namespace ChameleonChase
             heado1.AttachTo(this, false);
             heado1.Visible = false;
 
+            heado1.RelativeY = 2.0f;
+
             heado2 = SpriteManager.AddSprite("Cham_Open.png", mContentManagerName);
 
             texturePixelWidth = heado2.Texture.Width;
@@ -188,23 +193,23 @@ namespace ChameleonChase
 
             heado2.AttachTo(this, false);
             heado2.RelativeX = 5.0f;
-            heado2.RelativeY = 10.0f;
+            heado2.RelativeY = 12.0f;
             heado2.Visible = false;
 
-            heado3 = SpriteManager.AddSprite("Cham_Open.png", mContentManagerName);
+            heado0 = SpriteManager.AddSprite("Cham_Open.png", mContentManagerName);
 
-            texturePixelWidth = heado3.Texture.Width;
-            texturePixelHeight = heado3.Texture.Height;
+            texturePixelWidth = heado0.Texture.Width;
+            texturePixelHeight = heado0.Texture.Height;
 
-            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(heado3.Z);
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(heado0.Z);
 
-            heado3.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
-            heado3.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
+            heado0.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
+            heado0.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
 
-            heado3.AttachTo(this, false);
-            heado3.RelativeX = -5.0f;
-            heado3.RelativeY = -10.0f;
-            heado3.Visible = false;
+            heado0.AttachTo(this, false);
+            heado0.RelativeX = -5.0f;
+            heado0.RelativeY = -8.0f;
+            heado0.Visible = false;
 
             mVisibleRepresentation = SpriteManager.AddSprite("TankBody.png", mContentManagerName);
 
@@ -234,8 +239,8 @@ namespace ChameleonChase
             mCollision = ShapeManager.AddPolygon();
             mCollision.AttachTo(this, false);
             mCollision.Points = pointArray;
-            this.mVisibleRepresentation.Visible = false;
-            this.mCollision.Visible = false;
+            mVisibleRepresentation.Visible = false;
+            mCollision.Visible = false;
 
             mLaser = ShapeManager.AddCircle();
             mLaser.AttachTo(this, false);
@@ -245,6 +250,11 @@ namespace ChameleonChase
             mTongue.ScaleX = 0.5f;
             mTongue.AttachTo(this, false);
             mTongue.Visible = false;
+
+            tongueSprite = SpriteManager.AddSprite("Tongue.png", mContentManagerName);
+            tongueSprite.ScaleX = mTongue.ScaleX;
+            tongueSprite.AttachTo(this, false);
+            tongueSprite.Visible = false;
 
             this.X = DEFAULT_CHAMEL_POS;
             this.XVelocity = DEFAULT_CHAMEL_VELOCITY;
@@ -267,8 +277,7 @@ namespace ChameleonChase
 
             //Console.Out.WriteLine("Activate Laser: " + activateLaser);
 
-            this.mVisibleRepresentation.Visible = true;
-            this.mCollision.Visible = true;
+            mVisibleRepresentation.Visible = true;
 
             this.XVelocity = DEFAULT_CHAMEL_VELOCITY + Screens.GameScreen.SpeedMod;
 
@@ -289,28 +298,28 @@ namespace ChameleonChase
             }
 
             if (mTongue.Visible)
-                TongueRail = mTongueRail - 1;
+                TongueRail = mTongueRail;
             else
                 TongueRail = -1;
 
-            if (mTongue.Visible)
-            {
-                if (mTongueRail == 1)
-                {
-                    head3.Visible = false;
-                    heado3.Visible = true;
-                }
-                else if (mTongueRail == 2)
-                {
-                    head2.Visible = false;
-                    heado2.Visible = true;
-                }
-                else if (mTongueRail == 3)
-                {
-                    head1.Visible = false;
-                    heado1.Visible = true;
-                }
-            }
+            //if (mTongue.Visible)
+            //{
+            //    if (mTongueRail == 1)
+            //    {
+            //        head0.Visible = false;
+            //        heado0.Visible = true;
+            //    }
+            //    else if (mTongueRail == 2)
+            //    {
+            //        head2.Visible = false;
+            //        heado2.Visible = true;
+            //    }
+            //    else if (mTongueRail == 3)
+            //    {
+            //        head1.Visible = false;
+            //        heado1.Visible = true;
+            //    }
+            //}
         }
 
         public virtual void Destroy()
@@ -324,7 +333,7 @@ namespace ChameleonChase
         }
 
         #region Attacks
-               
+
         private void LaserAttack()
         {
             if (!mIsLasering)
@@ -335,26 +344,26 @@ namespace ChameleonChase
 
                 mLaser.RelativeXVelocity = LASER_VELOCITY;
                 mIsLasering = true;
-                mLaserRail = 3;
+                mLaserRail = 2;
             }
             else
             {
-                if ((mLaserRail == 3) && (mLaser.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0)))
+                if ((mLaserRail == 2) && (mLaser.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0)))
                 {
-                    mLaserRail = 2;
+                    mLaserRail = 1;
                     mLaser.RelativeY = 0.0f;
                     mLaser.RelativeXVelocity = -(LASER_VELOCITY);
                 }
-                else if ((mLaserRail == 2) && (mLaser.X <= this.X - 5.0f))
+                else if ((mLaserRail == 1) && (mLaser.X <= this.X - 5.0f))
                 {
-                    mLaserRail = 1;
+                    mLaserRail = 0;
                     mLaser.RelativeY = -RAIL_DISTANCE;
                     mLaser.RelativeXVelocity = LASER_VELOCITY;
                     //mLaser.RelativeX = this.X - 7.0f;
                 }
-                else if ((mLaserRail == 1) && (mLaser.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0)))
+                else if ((mLaserRail == 0) && (mLaser.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0)))
                 {
-                    mLaserRail = 0;
+                    mLaserRail = -1;
                     mLaser.RelativeXVelocity = 0;
                     mLaser.Visible = false;
                     mIsLasering = false;
@@ -390,39 +399,81 @@ namespace ChameleonChase
         {
             if (!mIsLicking)
             {
-                mTongue.Visible = true;
+                tongueSprite.Visible = true;
 
                 mTongue.RelativeXVelocity = TONGUE_VELOCITY;
+                tongueSprite.RelativeXVelocity = TONGUE_VELOCITY;
+
                 mIsLicking = true;
                 mTongueRail = CreateRandomNumber();
 
-                if (mTongueRail == 3)
+                if (mTongueRail == 2)
                 {
                     mTongue.RelativeX = TONGUE_START;
                     mTongue.RelativeY = RAIL_DISTANCE;
-                }
-                else if (mTongueRail == 2)
-                {
-                    mTongue.RelativeX = TONGUE_START - 5.0f;
-                    mTongue.RelativeY = 0.0f;
+                    tongueSprite.RelativeX = mTongue.RelativeX;
+                    tongueSprite.RelativeY = mTongue.RelativeY;
                 }
                 else if (mTongueRail == 1)
                 {
+                    mTongue.RelativeX = TONGUE_START - 5.0f;
+                    mTongue.RelativeY = 0.0f;
+                    tongueSprite.RelativeX = mTongue.RelativeX;
+                    tongueSprite.RelativeY = mTongue.RelativeY;
+                }
+                else if (mTongueRail == 0)
+                {
                     mTongue.RelativeX = TONGUE_START - 10.0f;
                     mTongue.RelativeY = -(RAIL_DISTANCE);
+                    tongueSprite.RelativeX = mTongue.RelativeX;
+                    tongueSprite.RelativeY = mTongue.RelativeY;
+                }
+
+                if (mTongueRail == 0)
+                {
+                    head0.Visible = false;
+                    heado0.Visible = true;
+                }
+                else if (mTongueRail == 1)
+                {
+                    head1.Visible = false;
+                    heado1.Visible = true;
+                }
+                else if (mTongueRail == 2)
+                {
+                    head2.Visible = false;
+                    heado2.Visible = true;
                 }
             }
             else
             {
                 mTongue.ScaleX += 0.25f;
+                tongueSprite.ScaleX += 0.25f;
+
                 if (mTongue.X >= SpriteManager.Camera.AbsoluteRightXEdgeAt(0) + 5.0f)
                 {
                     mTongue.RelativeXVelocity = 0.0f;
                     mTongue.ScaleX = 0.5f;
-                    mTongue.Visible = false;
+                    tongueSprite.Visible = false;
 
                     mIsLicking = false;
                     mLastTonguePos = this.X + (Screens.GameScreen.SpeedMod * 20);
+
+                    if (mTongueRail == 0)
+                    {
+                        head0.Visible = true;
+                        heado0.Visible = false;
+                    }
+                    else if (mTongueRail == 1)
+                    {
+                        head1.Visible = true;
+                        heado1.Visible = false;
+                    }
+                    else if (mTongueRail == 2)
+                    {
+                        head2.Visible = true;
+                        heado2.Visible = false;
+                    }
                 }
             }
         }
@@ -433,9 +484,9 @@ namespace ChameleonChase
         {
             Random r = new Random();
 
-            return r.Next(1, 4);
+            return r.Next(0, 3);
         }
-        
+
         #endregion
     }
 }
