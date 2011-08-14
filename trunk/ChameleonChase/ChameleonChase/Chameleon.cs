@@ -22,11 +22,10 @@ namespace ChameleonChase
         private const float DEFAULT_CHAMEL_POS = -10.0f;
         
         private const float LASER_VELOCITY = 20.0f;
-        private const float LASER_TRIGGER_DISTANCE = 100.0f;
+        private const float LASER_TRIGGER_DISTANCE = 300.0f;
 
         private const float TONGUE_VELOCITY = 15.0f;
-        private const float TONGUE_OFFSET = 50.0f;
-        private const float TONGUE_TRIGGER_DISTANCE = 100.0f;
+        private const float TONGUE_TRIGGER_DISTANCE = 500.0f;
         private const float TONGUE_START = 5.0f;
 
         private const float RAIL_DISTANCE = 10.0f;
@@ -132,6 +131,8 @@ namespace ChameleonChase
             mCollision = ShapeManager.AddPolygon();
             mCollision.AttachTo(this, false);
             mCollision.Points = pointArray;
+            this.mVisibleRepresentation.Visible = false;
+            this.mCollision.Visible = false;
 
             mLaser = ShapeManager.AddCircle();
             mLaser.AttachTo(this, false);
@@ -150,7 +151,7 @@ namespace ChameleonChase
             mLaserRail = 3;
 
             mTongue.RelativeX = TONGUE_START;
-            this.mLastTonguePos = TONGUE_OFFSET;
+            this.mLastTonguePos = 0.0f;
 
             TongueRail = 0;
         }
@@ -163,6 +164,9 @@ namespace ChameleonChase
             bool activateTongue = (this.X - mLastTonguePos > TONGUE_TRIGGER_DISTANCE);
 
             //Console.Out.WriteLine("Activate Laser: " + activateLaser);
+
+            this.mVisibleRepresentation.Visible = true;
+            this.mCollision.Visible = true;
 
             this.XVelocity = DEFAULT_CHAMEL_VELOCITY + Screens.GameScreen.SpeedMod;
 
@@ -234,7 +238,7 @@ namespace ChameleonChase
                     mLaser.RelativeXVelocity = 0;
                     mLaser.Visible = false;
                     mIsLasering = false;
-                    mLastLaserPos = this.X;
+                    mLastLaserPos = this.X + (Screens.GameScreen.SpeedMod * 20);
                 }
 
                 #region Old Laser Code
@@ -298,7 +302,7 @@ namespace ChameleonChase
                     mTongue.Visible = false;
 
                     mIsLicking = false;
-                    mLastTonguePos = this.X;
+                    mLastTonguePos = this.X + (Screens.GameScreen.SpeedMod * 20);
                 }
             }
         }

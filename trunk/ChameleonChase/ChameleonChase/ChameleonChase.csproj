@@ -111,10 +111,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Booster.cs" />
     <Compile Include="Chameleon.cs" />
     <Compile Include="CrippleMan.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Obstacle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
