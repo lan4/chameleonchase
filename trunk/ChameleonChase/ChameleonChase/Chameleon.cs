@@ -54,6 +54,8 @@ namespace ChameleonChase
         // Keep the ContentManager for easy access:
         string mContentManagerName;
 
+        private Line laserLine;
+
         #endregion
 
         #region Properties
@@ -153,15 +155,29 @@ namespace ChameleonChase
             mTongue.RelativeX = TONGUE_START;
             this.mLastTonguePos = 0.0f;
 
-            TongueRail = 0;
+            TongueRail = -1;
+
+            laserLine = ShapeManager.AddLine();
+            
+
         }
 
+        private void DrawLaser()
+        {
+            laserLine.X = SpriteManager.Camera.X;
+            laserLine.Y = SpriteManager.Camera.Y;
+            laserLine.RelativePoint1 = new Point3D((double)this.X, (double)this.Y);
+            laserLine.RelativePoint2 = new Point3D((double)this.X - mLaser.X, (double)this.X - mLaser.Y);
+            laserLine.Visible = mLaser.Visible;
+        }
 
         public virtual void Activity()
         {
             // This code should do things like set Animations, respond to input, and so on.
             bool activateLaser = (this.X - mLastLaserPos > LASER_TRIGGER_DISTANCE);
             bool activateTongue = (this.X - mLastTonguePos > TONGUE_TRIGGER_DISTANCE);
+
+            DrawLaser();
 
             //Console.Out.WriteLine("Activate Laser: " + activateLaser);
 
@@ -191,6 +207,7 @@ namespace ChameleonChase
             else
                 TongueRail = -1;
 
+            
         }
 
         public virtual void Destroy()
