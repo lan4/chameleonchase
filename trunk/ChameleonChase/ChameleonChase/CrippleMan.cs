@@ -45,6 +45,11 @@ namespace ChameleonChase
             get { return mCollision; }
         }
 
+        public int RailPosition
+        {
+            get { return railPos; }
+        }
+
         #endregion
 
         #region Methods
@@ -79,8 +84,18 @@ namespace ChameleonChase
             // Here you may want to add your objects to the engine.  Use layerToAddTo
             // when adding if your Entity supports layers.  Make sure to attach things
             // to this if appropriate.
-            mVisibleRepresentation = SpriteManager.AddSprite("Player_ProgArt.png", mContentManagerName);
+            mVisibleRepresentation = SpriteManager.AddSprite("GuyInChair.png", mContentManagerName);
+
+            float texturePixelWidth = mVisibleRepresentation.Texture.Width;
+            float texturePixelHeight = mVisibleRepresentation.Texture.Height;
+
+            float pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(mVisibleRepresentation.Z);
+
+            mVisibleRepresentation.ScaleX = .25f * texturePixelWidth / pixelsPerUnit;
+            mVisibleRepresentation.ScaleY = .25f * texturePixelHeight / pixelsPerUnit;
+
             mVisibleRepresentation.AttachTo(this, false);
+            mVisibleRepresentation.RelativeY = 1.0f;
 
             mCollision = ShapeManager.AddCircle();
             mCollision.AttachTo(this, false);
@@ -94,10 +109,10 @@ namespace ChameleonChase
 
             Sprite background = SpriteManager.AddSprite("TestBackground.png", mContentManagerName);
 
-            float texturePixelWidth = background.Texture.Width;
-            float texturePixelHeight = background.Texture.Height;
+            texturePixelWidth = background.Texture.Width;
+            texturePixelHeight = background.Texture.Height;
 
-            float pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(background.Z);
+            pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(background.Z);
 
             background.ScaleX = .5f * texturePixelWidth / pixelsPerUnit;
             background.ScaleY = .5f * texturePixelHeight / pixelsPerUnit;
@@ -149,7 +164,7 @@ namespace ChameleonChase
 
         public void Jump()
         {
-            if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Space))
+            if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Space) && !isJumping)
             {
                 isJumping = true;
                 this.YVelocity = 25.0f;
