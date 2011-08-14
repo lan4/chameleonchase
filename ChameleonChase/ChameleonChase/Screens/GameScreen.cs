@@ -56,7 +56,7 @@ namespace ChameleonChase.Screens
 
             scoreText = TextManager.AddText("" + score);
             scoreText.AttachTo(SpriteManager.Camera, false);
-            scoreText.RelativeX = -15.0f;
+            scoreText.RelativeX = -20.0f;
             scoreText.RelativeY = 15.0f;
             scoreText.RelativeZ = -40.0f;
             scoreText.SetColor(0, 0, 0);
@@ -97,7 +97,7 @@ namespace ChameleonChase.Screens
             PlaceObstacles();
 
             score = (int) player.X;
-            scoreText.DisplayText = "" + score;
+            scoreText.DisplayText = "Score:  " + score;
 
             base.Activity(firstTimeCalled);
         }
