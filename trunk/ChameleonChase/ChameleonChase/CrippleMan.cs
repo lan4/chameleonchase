@@ -100,12 +100,12 @@ namespace ChameleonChase
             mCollision = ShapeManager.AddCircle();
             mCollision.AttachTo(this, false);
 
-            this.XVelocity = 50.0f;
+            this.XVelocity = 25.0f;
 
             railPos = 1;
             isJumping = false;
 
-            SpriteManager.Camera.XVelocity = 50.0f;
+            SpriteManager.Camera.XVelocity = 25.0f;
 
             Sprite background = SpriteManager.AddSprite("TestBackground.png", mContentManagerName);
 
@@ -128,7 +128,7 @@ namespace ChameleonChase
             {
                 if (railPos != 2)
                 {
-                    this.X += 10.0f;
+                    this.X += 5.0f;
                     this.Y += 10.0f;
                     railPos += 1;
                 }
@@ -138,7 +138,7 @@ namespace ChameleonChase
             {
                 if (railPos != 0)
                 {
-                    this.X -= 10.0f;
+                    this.X -= 5.0f;
                     this.Y -= 10.0f;
                     railPos -= 1;
                 }
@@ -147,16 +147,16 @@ namespace ChameleonChase
             if (InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.Right) || 
                 InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.D))
             {
-                this.XVelocity = 70.0f;
+                this.XVelocity = 45.0f;
             }
             else if (InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.Left) || 
                      InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.A))
             {
-                this.XVelocity = 30.0f;
+                this.XVelocity = 5.0f;
             }
             else
             {
-                this.XVelocity = 50.0f;
+                this.XVelocity = 25.0f;
             }
 
             groundLevel = this.Y;
@@ -188,7 +188,7 @@ namespace ChameleonChase
 
             if (posDiff > 20.0f || posDiff < -20.0f)
             {
-                this.XVelocity = 50.0f;
+                this.XVelocity = 25.0f;
                 if (posDiff > 0.0f)
                     this.X -= 0.2f;
                 else if (posDiff < 0.0f)
