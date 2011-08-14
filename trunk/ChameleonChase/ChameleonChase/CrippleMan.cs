@@ -33,9 +33,11 @@ namespace ChameleonChase
         float groundLevel;
 
         bool isDamaged;
+        bool isBoosting;
         int hp;
 
         double damageTime;
+        double boostTime;
 
         #endregion
 
@@ -58,11 +60,6 @@ namespace ChameleonChase
         public bool IsDamaged
         {
             get { return isDamaged; }
-        }
-
-        public int HP
-        {
-            get { return hp; }
         }
 
         #endregion
@@ -120,7 +117,6 @@ namespace ChameleonChase
             railPos = 1;
             isJumping = false;
             isDamaged = false;
-            hp = 10;
 
             SpriteManager.Camera.XVelocity = 25.0f;
 
@@ -164,16 +160,31 @@ namespace ChameleonChase
             if (InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.Right) || 
                 InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.D))
             {
-                this.XVelocity = 45.0f;
+                if (isBoosting)
+                    this.XVelocity = 47.0f + Screens.GameScreen.SpeedMod;
+                else if (isDamaged)
+                    this.XVelocity = 23.0f;
+                else
+                    this.XVelocity = 45.0f + Screens.GameScreen.SpeedMod;
             }
             else if (InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.Left) || 
                      InputManager.Keyboard.KeyDown(Microsoft.Xna.Framework.Input.Keys.A))
             {
-                this.XVelocity = 5.0f;
+                if (isBoosting)
+                    this.XVelocity = 7.0f + Screens.GameScreen.SpeedMod;
+                else if (isDamaged)
+                    this.XVelocity = 23.0f;
+                else
+                    this.XVelocity = 5.0f + Screens.GameScreen.SpeedMod;
             }
             else
             {
-                this.XVelocity = 25.0f;
+                if (isBoosting)
+                    this.XVelocity = 27.0f + Screens.GameScreen.SpeedMod;
+                else if (isDamaged)
+                    this.XVelocity = 23.0f;
+                else
+                    this.XVelocity = 25.0f + Screens.GameScreen.SpeedMod;
             }
 
             groundLevel = this.Y;
@@ -205,7 +216,13 @@ namespace ChameleonChase
 
             if (posDiff > 20.0f || posDiff < -20.0f)
             {
-                this.XVelocity = 25.0f;
+                if (isBoosting)
+                    this.XVelocity = 27.0f + Screens.GameScreen.SpeedMod;
+                else if (isDamaged)
+                    this.XVelocity = 23.0f;
+                else
+                    this.XVelocity = 25.0f + Screens.GameScreen.SpeedMod;
+
                 if (posDiff > 0.0f)
                     this.X -= 0.2f;
                 else if (posDiff < 0.0f)
@@ -217,9 +234,28 @@ namespace ChameleonChase
         {
             if (!isDamaged)
             {
-                isDamaged = true;
-                hp--;
-                damageTime = TimeManager.CurrentTime + 2;
+                if (isBoosting)
+                {
+                    isBoosting = false;
+                }
+                else
+                {
+                    isDamaged = true;
+                    damageTime = TimeManager.CurrentTime + 1;
+                }
+            }
+        }
+
+        public void OnBoost()
+        {
+            if (isDamaged)
+            {
+                isDamaged = false;
+            }
+            else
+            {
+                isBoosting = true;
+                boostTime = TimeManager.CurrentTime + 2;
             }
         }
 
@@ -241,6 +277,11 @@ namespace ChameleonChase
             if (isDamaged)
             {
                 FlashSprite();
+            }
+
+            if (TimeManager.CurrentTime > boostTime)
+            {
+                isBoosting = false;
             }
 
             if (!isJumping)

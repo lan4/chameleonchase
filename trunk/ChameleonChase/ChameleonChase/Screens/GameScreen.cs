@@ -16,10 +16,12 @@ namespace ChameleonChase.Screens
         Chameleon chameleon;
 
         List<Obstacle> obstaclePool;
+        List<Booster> boosterPool;
+
+        public static float SpeedMod = 0;
 
         int score;
         Text scoreText;
-        Text hpText;
 
         #region Methods
 
@@ -51,6 +53,13 @@ namespace ChameleonChase.Screens
                 obstaclePool.Add(new Obstacle(FlatRedBallServices.GlobalContentManager));
             }
 
+            boosterPool = new List<Booster>();
+
+            for (int y = 0; y < 3; y++)
+            {
+                boosterPool.Add(new Booster(FlatRedBallServices.GlobalContentManager));
+            }
+
             Sprite referencePoint = SpriteManager.AddSprite("redball.bmp", FlatRedBallServices.GlobalContentManager);
 
             score = 0;
@@ -61,12 +70,6 @@ namespace ChameleonChase.Screens
             scoreText.RelativeY = 15.0f;
             scoreText.RelativeZ = -40.0f;
             scoreText.SetColor(0, 0, 0);
-
-            hpText = TextManager.AddText("" + player.HP);
-            hpText.AttachTo(SpriteManager.Camera, false);
-            hpText.RelativeY = 15.0f;
-            hpText.RelativeZ = -40.0f;
-            hpText.SetColor(0, 0, 0);
 			
 			// AddToManagers should be called LAST in this method:
 			if(addToManagers)
@@ -95,6 +98,15 @@ namespace ChameleonChase.Screens
                     item.Y = FlatRedBallServices.Random.Next(-1, 2) * 10.0f;
                 }
             }
+
+            foreach (Booster item in boosterPool)
+            {
+                if (item.X - SpriteManager.Camera.X < -30.0f)
+                {
+                    item.X = FlatRedBallServices.Random.Next(0, 20) + SpriteManager.Camera.X + 50.0f;
+                    item.Y = FlatRedBallServices.Random.Next(-1, 2) * 10.0f;
+                }
+            }
         }
 
         private void CheckCollisions()
@@ -104,6 +116,14 @@ namespace ChameleonChase.Screens
                 if (item.Collision.CollideAgainst(player.Collision) && !player.IsDamaged)
                 {
                     player.OnHit();
+                }
+            }
+
+            foreach (Booster item in boosterPool)
+            {
+                if (item.Collision.CollideAgainst(player.Collision))
+                {
+                    player.OnBoost();
                 }
             }
         }
@@ -117,7 +137,8 @@ namespace ChameleonChase.Screens
 
             score = (int) player.X;
             scoreText.DisplayText = "Score:  " + score;
-            hpText.DisplayText = "" + player.HP;
+
+            SpeedMod = (int) (player.X / 500.0f);
 
             base.Activity(firstTimeCalled);
         }
