@@ -13,8 +13,9 @@ namespace ChameleonChase.Screens
     public class GameScreen : Screen
     {
         CrippleMan player;
-
         Chameleon chameleon;
+
+        List<Obstacle> obstaclePool;
 
         int score;
         Text scoreText;
@@ -41,6 +42,13 @@ namespace ChameleonChase.Screens
             player = new CrippleMan(FlatRedBallServices.GlobalContentManager);
 
             chameleon = new Chameleon(FlatRedBallServices.GlobalContentManager);
+
+            obstaclePool = new List<Obstacle>();
+
+            for (int x = 0; x < 6; x++)
+            {
+                obstaclePool.Add(new Obstacle(FlatRedBallServices.GlobalContentManager));
+            }
 
             Sprite referencePoint = SpriteManager.AddSprite("redball.bmp", FlatRedBallServices.GlobalContentManager);
 
@@ -70,10 +78,23 @@ namespace ChameleonChase.Screens
 
         #region Public Methods
 
+        private void PlaceObstacles()
+        {
+            foreach (Obstacle item in obstaclePool)
+            {
+                if (item.X - SpriteManager.Camera.X < -30.0f)
+                {
+                    item.X = FlatRedBallServices.Random.Next(0, 20) + SpriteManager.Camera.X + 50.0f;
+                    item.Y = FlatRedBallServices.Random.Next(-1, 2) * 10.0f;
+                }
+            }
+        }
+
         public override void Activity(bool firstTimeCalled)
         {
             player.Activity();
             chameleon.Activity();
+            PlaceObstacles();
 
             score = (int) player.X;
             scoreText.DisplayText = "" + score;
