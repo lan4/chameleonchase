@@ -82,7 +82,7 @@ namespace ChameleonChase
             // Here you may want to add your objects to the engine.  Use layerToAddTo
             // when adding if your Entity supports layers.  Make sure to attach things
             // to this if appropriate.
-            mVisibleRepresentation = SpriteManager.AddSprite("Box.png", mContentManagerName);
+            mVisibleRepresentation = SpriteManager.AddSprite("GasTank.png", mContentManagerName);
 
             float texturePixelWidth = mVisibleRepresentation.Texture.Width;
             float texturePixelHeight = mVisibleRepresentation.Texture.Height;
