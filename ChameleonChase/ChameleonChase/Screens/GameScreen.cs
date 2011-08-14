@@ -94,8 +94,7 @@ namespace ChameleonChase.Screens
             {
                 if (item.X - SpriteManager.Camera.X < -30.0f)
                 {
-                    item.X = FlatRedBallServices.Random.Next(0, 20) + SpriteManager.Camera.X + 50.0f;
-                    item.Y = FlatRedBallServices.Random.Next(-1, 2) * 10.0f;
+                    RepositionObstacles(item);
                 }
             }
 
@@ -103,10 +102,21 @@ namespace ChameleonChase.Screens
             {
                 if (item.X - SpriteManager.Camera.X < -30.0f)
                 {
-                    item.X = FlatRedBallServices.Random.Next(0, 20) + SpriteManager.Camera.X + 50.0f;
-                    item.Y = FlatRedBallServices.Random.Next(-1, 2) * 10.0f;
+                    RepositionObstacles(item);
                 }
             }
+        }
+
+        private void RepositionObstacles(Booster item)
+        {
+            item.X = FlatRedBallServices.Random.Next(0, 20) + SpriteManager.Camera.X + 50.0f;
+            item.Y = FlatRedBallServices.Random.Next(-1, 2) * 10.0f;
+        }
+
+        private void RepositionObstacles(Obstacle item)
+        {
+            item.X = FlatRedBallServices.Random.Next(0, 20) + SpriteManager.Camera.X + 50.0f;
+            item.Y = FlatRedBallServices.Random.Next(-1, 2) * 10.0f;
         }
 
         private void CheckCollisions()
@@ -116,6 +126,7 @@ namespace ChameleonChase.Screens
                 if (item.Collision.CollideAgainst(player.Collision) && !player.IsDamaged)
                 {
                     player.OnHit();
+                    RepositionObstacles(item);
                 }
             }
 
@@ -124,7 +135,23 @@ namespace ChameleonChase.Screens
                 if (item.Collision.CollideAgainst(player.Collision))
                 {
                     player.OnBoost();
+                    RepositionObstacles(item);
                 }
+            }
+
+            if (chameleon.Collision.CollideAgainst(player.Collision))
+            {
+                player.Destroy();
+            }
+
+            if (chameleon.Laser.CollideAgainst(player.Collision))
+            {
+                player.OnHit();
+            }
+
+            if (chameleon.Tongue.CollideAgainst(player.Collision))
+            {
+                player.OnLicked();
             }
         }
 
@@ -138,7 +165,7 @@ namespace ChameleonChase.Screens
             score = (int) player.X;
             scoreText.DisplayText = "Score:  " + score;
 
-            SpeedMod = (int) (player.X / 500.0f);
+            SpeedMod = (int) (player.X / 100.0f);
 
             base.Activity(firstTimeCalled);
         }

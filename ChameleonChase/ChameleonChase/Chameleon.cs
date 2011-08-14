@@ -63,10 +63,22 @@ namespace ChameleonChase
         // Here you'd define properties for things
         // you want to give other Entities and game code
         // access to, like your Collision property:
-        //public Circle Collision
-        //{
-        //    get { return mCollision; }
-        //}
+        public Polygon Collision
+        {
+            get { return mCollision; }
+        }
+
+        public Circle Laser
+        {
+            get { return mLaser; }
+        }
+
+        public AxisAlignedRectangle Tongue
+        {
+            get { return mTongue; }
+        }
+
+        public static int TongueRail;
 
         #endregion
 
@@ -139,6 +151,8 @@ namespace ChameleonChase
 
             mTongue.RelativeX = TONGUE_START;
             this.mLastTonguePos = TONGUE_OFFSET;
+
+            TongueRail = 0;
         }
 
 
@@ -149,6 +163,8 @@ namespace ChameleonChase
             bool activateTongue = (this.X - mLastTonguePos > TONGUE_TRIGGER_DISTANCE);
 
             //Console.Out.WriteLine("Activate Laser: " + activateLaser);
+
+            this.XVelocity = DEFAULT_CHAMEL_VELOCITY + Screens.GameScreen.SpeedMod;
 
             if (mIsLasering)
                 activateLaser = true;
@@ -165,6 +181,11 @@ namespace ChameleonChase
             {
                 TongueAttack();
             }
+
+            if (mTongue.Visible)
+                TongueRail = mTongueRail - 1;
+            else
+                TongueRail = -1;
 
         }
 
