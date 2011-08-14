@@ -139,7 +139,7 @@ namespace ChameleonChase
             if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Up) || 
                 InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.W))
             {
-                if (railPos != 2)
+                if (railPos != 2 && railPos + 1 != Chameleon.TongueRail)
                 {
                     this.X += 5.0f;
                     this.Y += 10.0f;
@@ -149,7 +149,7 @@ namespace ChameleonChase
             else if (InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.Down) || 
                      InputManager.Keyboard.KeyPushed(Microsoft.Xna.Framework.Input.Keys.S))
             {
-                if (railPos != 0)
+                if (railPos != 0 && railPos - 1 != Chameleon.TongueRail)
                 {
                     this.X -= 5.0f;
                     this.Y -= 10.0f;
@@ -224,9 +224,9 @@ namespace ChameleonChase
                     this.XVelocity = 25.0f + Screens.GameScreen.SpeedMod;
 
                 if (posDiff > 0.0f)
-                    this.X -= 0.2f;
+                    this.X -= 0.5f;
                 else if (posDiff < 0.0f)
-                    this.X += 0.2f;
+                    this.X += 0.5f;
             }
         }
 
@@ -246,11 +246,58 @@ namespace ChameleonChase
             }
         }
 
+        public void OnLicked()
+        {
+            if (!isDamaged)
+            {
+                if (isBoosting)
+                {
+                    isBoosting = false;
+                }
+                else
+                {
+                    isDamaged = true;
+                    damageTime = TimeManager.CurrentTime + 1;
+                }
+
+                if (railPos == 0)
+                {
+                    this.X += 5.0f;
+                    this.Y += 10.0f;
+                    railPos += 1;
+                }
+                else if (railPos == 1)
+                {
+                    float posDiff = this.X - SpriteManager.Camera.X;
+
+                    if (posDiff > 8.0f)
+                    {
+                        this.X -= 5.0f;
+                        this.Y -= 10.0f;
+                        railPos -= 1;
+                    }
+                    else
+                    {
+                        this.X += 5.0f;
+                        this.Y += 10.0f;
+                        railPos += 1;
+                    }
+                }
+                else
+                {
+                    this.X -= 5.0f;
+                    this.Y -= 10.0f;
+                    railPos -= 1;
+                }
+            }
+        }
+
         public void OnBoost()
         {
             if (isDamaged)
             {
                 isDamaged = false;
+                mVisibleRepresentation.Visible = true;
             }
             else
             {
@@ -262,12 +309,6 @@ namespace ChameleonChase
         public void FlashSprite()
         {
             mVisibleRepresentation.Visible = !mVisibleRepresentation.Visible;
-
-            if (TimeManager.CurrentTime > damageTime)
-            {
-                isDamaged = false;
-                mVisibleRepresentation.Visible = true;
-            }
         }
 
         public virtual void Activity()
@@ -284,12 +325,20 @@ namespace ChameleonChase
                 isBoosting = false;
             }
 
+            if (TimeManager.CurrentTime > damageTime)
+            {
+                isDamaged = false;
+                mVisibleRepresentation.Visible = true;
+            }
+
             if (!isJumping)
             {
                 Move();
             }
 
             Jump();
+
+            SpriteManager.Camera.XVelocity = 25.0f + Screens.GameScreen.SpeedMod;
 
             KeepOnScreen();
         }
