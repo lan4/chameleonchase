@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.Xna.Framework.Media;
+
 using FlatRedBall;
 using FlatRedBall.Graphics;
 using FlatRedBall.Math.Geometry;
@@ -15,10 +17,19 @@ namespace ChameleonChase.Screens
         CrippleMan player;
         Chameleon chameleon;
 
+        Song gameSong;
+        Song gameoverSong;
+
+        Sprite gameoverSprite;
+
         List<Obstacle> obstaclePool;
         List<Booster> boosterPool;
 
         public static float SpeedMod = 0;
+
+        private int finalScore;
+
+        private bool gameover;
 
         int score;
         Text scoreText;
@@ -76,6 +87,28 @@ namespace ChameleonChase.Screens
 			{
 				AddToManagers();
 			}
+
+            gameoverSprite = SpriteManager.AddSprite("GameOver.png", FlatRedBallServices.GlobalContentManager);
+            gameoverSprite.Visible = false;
+            gameoverSprite.AttachTo(SpriteManager.Camera, false);
+
+            float texturePixelWidth = gameoverSprite.Texture.Width;
+            float texturePixelHeight = gameoverSprite.Texture.Height;
+
+            float pixelsPerUnit = SpriteManager.Camera.PixelsPerUnitAt(gameoverSprite.Z);
+
+            gameoverSprite.ScaleX = .25f * texturePixelWidth / pixelsPerUnit;
+            gameoverSprite.ScaleY = .25f * texturePixelHeight / pixelsPerUnit;
+
+            gameoverSprite.RelativeZ = -30.0f;
+
+            gameSong = FlatRedBallServices.Load<Song>(@"Content\gamesong");
+            Microsoft.Xna.Framework.Media.MediaPlayer.Play(gameSong);
+
+            gameoverSong = FlatRedBallServices.Load<Song>(@"Content\gameoversong");
+
+            gameover = false;
+
         }
 
 		public override void AddToManagers()
@@ -142,6 +175,11 @@ namespace ChameleonChase.Screens
             if (chameleon.Collision.CollideAgainst(player.Collision))
             {
                 player.Destroy();
+                if (!gameover)
+                    Microsoft.Xna.Framework.Media.MediaPlayer.Play(gameoverSong);
+                gameover = true;
+                gameoverSprite.Visible = true;
+                finalScore = score;
             }
 
             if (chameleon.Laser.CollideAgainst(player.Collision))
@@ -162,8 +200,15 @@ namespace ChameleonChase.Screens
             PlaceObstacles();
             CheckCollisions();
 
-            score = (int) player.X;
-            scoreText.DisplayText = "Score:  " + score;
+            if (!gameover)
+            {
+                score = (int)player.X;
+                scoreText.DisplayText = "Score:  " + score;
+            }
+            else
+            {
+                scoreText.DisplayText = "Final Score: " + finalScore;
+            }
 
             SpeedMod = (int) (player.X / 100.0f);
 
